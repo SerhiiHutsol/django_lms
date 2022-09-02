@@ -9,3 +9,19 @@ from webargs import fields
 from webargs.djangoparser import use_args
 
 
+@use_args(
+    {
+        'first_name': Str(required=False),  # ,missing=None)
+        'last_name': Str(required=False),
+        'age': Int(required=False)
+    },
+    location='query'
+)
+def get_students(request, args):
+    st = Student.objects.all()
+    for key, value in args.items():
+        st = st.filter(**{key: value})
+
+    http = qs2html(st)
+
+    return HttpResponse(http)
